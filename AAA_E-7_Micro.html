@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dauerhafte Sprachsteuerung mit Start-Button</title>
+</head>
+<body>
+  <h1>Sprachsteuerung</h1>
+
+  <label for="ip">Pi-IP-Adresse:</label>
+  <input type="text" id="ip" value="192.168.3.227" placeholder="z.B. 192.168.3.227" />
+  <button id="startBtn">Start Sprachsteuerung</button>
+
+  <p id="output"></p>
+  <p id="status"></p>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const output = document.getElementById('output');
+    const status = document.getElementById('status');
+    const ipInput = document.getElementById('ip');
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      status.textContent = "Spracherkennung wird von deinem Browser nicht unterstützt.";
+      startBtn.disabled = true;
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'de-DE';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      recognition.continuous = false;
+
+      function startRecognition() {
+        status.textContent = "🎤 Höre zu...";
+        recognition.start();
+      }
+
+      recognition.onresult = (event) => {
+        const speechResult = event.results[0][0].transcript.toLowerCase();
+        output.textContent = `📝 Erkannt: ${speechResult}`;
+
+        if (speechResult.includes("e7") || speechResult.includes("sieben") || speechResult.includes("7")) {
+          status.textContent = "✅ Wakeword erkannt, sende Befehl...";
+          sendCommand(speechResult);
+        } else {
+          status.textContent = "Wakeword nicht erkannt, warte weiter...";
+        }
+      };
+
+      recognition.onerror = (event) => {
+        status.textContent = '❌ Fehler: ' + event.error;
+        setTimeout(startRecognition, 1000);
+      };
+
+      recognition.onend = () => {
+        setTimeout(startRecognition, 200);
+      };
+
+      function sendCommand(command) {
+        const piIP = ipInput.value.trim();
+        if (!piIP) {
+          status.textContent = "❗ Bitte eine gültige IP-Adresse eingeben.";
+          return;
+        }
+
+        fetch(`http://${piIP}:7567/command`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ intent: command })
+        })
+        .then(response => response.text())
+        .then(text => {
+          status.textContent = "🔁 Antwort: " + text + " | Warte weiter auf Befehle...";
+        })
+        .catch(err => {
+          status.textContent = "❌ Fehler beim Senden: " + err + " | Warte weiter auf Befehle...";
+        });
+      }
+
+      startBtn.onclick = () => {
+        startBtn.disabled = true;
+        startRecognition();
+      };
+    }
+  </script>
+</body>
+</html>
