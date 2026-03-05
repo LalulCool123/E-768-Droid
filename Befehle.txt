@@ -1,0 +1,24 @@
+hallo:hallo ich bin e-7 6 8
+systemcheck:Servotest.py
+geburtstag:Birthday.mp3
+geburtstagmodus:Birthday.mp3
+Holo:scan.mp3
+scan:ultraschall_messung.py
+was bist:ich bin ein sprachbasierter, assistenten mechanik. und navigazieons, droid
+wer bist:e-7 6 8, dein assistent droide
+witz:warum legen hÃ¼ner eier?..... weil sie beim werrfen kaput gehen hahahahahahhahahahhahahahhah
+sing:mi mi mi mi hahahah ,ne... verarscht ...ich singe doch nicht,. wer denkst du wer ich binn,., hahaha!!
+max:Max ist klein hasslich, und dumm und keiner mag ihn, hahahahahahah, so ein opfer, der kann garnix!
+rÃ¼cksitz:Max halz maul das ist so unlustig!
+wetter:guck aus dem fenster du fauler sack... mann ey
+party:run.mp3
+musik:run.mp3
+partymodus:run.mp3
+music:run.mp3
+activieren:kippschutz.py
+gleichgewicht:kippschutz.py
+was kannst:ich assistiere bei fragen oder technischen problemen, und helfe bei navigazieon
+binär:robot_sprache.py
+101:protokoll 1 0 1 unbeschrieben 
+107:ubertragung, der Daten, an sector 1 0 7 leuft, . leuft, . leuft, . leuft, . audentifiziere, . abgeschlossen, ubertragung, erfolgreich
+7567:R e x protokoll, wird Ausgefuehrt
