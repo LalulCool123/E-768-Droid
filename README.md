@@ -502,10 +502,10 @@ Bitte beachte die dort genannten Bedingungen für Nutzung, Weitergabe und Änder
 
 - Projekt: E‑768-Droid – Sprachgesteuerter KI-Roboter
 - Repository: <https://github.com/LalulCool123/E-768-Droid>
-- Autor / Maintainer: (Bitte Name / Nickname eintragen)
+- Autor / Maintainer: (Edrio/Rahul Kavlak)
 - Kontakt:
   - GitHub-Issues im Repository
-  - optional: E-Mail-Adresse ergänzen
+  - optional: Rahul.Kavlak@gmx.de
 
 ---
 ```
