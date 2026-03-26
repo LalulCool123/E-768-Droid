@@ -1,4 +1,4 @@
-```markdown
+
 # E‑768 Droid – Sprachgesteuerter KI‑Roboter für den Raspberry Pi
 
 > Offline-Spracherkennung, eigene Robotersprache, Sensorik und Bewegung in einem Projekt.  
@@ -48,7 +48,7 @@ pip install vosk sounddevice
 # Beispiel: zentrale Logik starten (falls du server2.py dafür nutzt)
 python3 server2.py
 ```
-```markdown
+
 Dann:
 
 - Mikrofon ins Raspberry Pi stecken
