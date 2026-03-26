@@ -114,6 +114,8 @@ E-768-Droid/
 └── woerter.txt                       # Wörterliste für Spracherkennung
 ```
 
+<img width="1024" height="1536" alt="Copilot_20260326_140723" src="https://github.com/user-attachments/assets/e9f47a86-057c-4935-8e99-1cf02a4b45fc" />
+
 ---
 
 ## 5. Hardware – Was du typischerweise brauchst
