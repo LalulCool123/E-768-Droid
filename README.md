@@ -21,19 +21,35 @@ Ziel ist es, eine flexible Architektur zu schaffen, in der man:
 
 ## 🏗 Projektstruktur
 
-*(Beispiel – bitte an den tatsächlichen Code anpassen)*
 
 ```text
-E-768/
-├─ src/
-│  ├─ core/              # Basis-Framework, Interfaces, Utils
-│  ├─ ai/                # KI-Module (Agent, Planner, ggf. ML-Modelle)
-│  ├─ behavior/          # Verhaltenslogik (FSM, Behavior Trees, …)
-│  ├─ sensors/           # Sensor-Simulation (Umgebungsdaten, Events)
-│  ├─ actuators/         # Aktionen des Droiden (Bewegen, Interagieren, …)
-│  └─ simulation/        # Umgebung, Szenarien, Tests
-├─ tests/                # Unit- & Integrationstests
-├─ docs/                 # Zusätzliche Dokumentation, Diagramme
-├─ .gitignore
-├─ README.md
-└─ LICENSE
+E-768-Droid/
+├── E-Sieben_de_raspberry-pi_v3_0_0/
+│   └── E-7_Befehle/
+├── Sounds/
+├── __pycache__/
+├── model/
+│   └── vosk-model-small-de-0.15/
+├── rhino/
+│   └── binding/
+│       └── python/
+├── whisper-venv/
+│
+├── AAA_E-7_Micro.html
+├── Befehle.txt
+├── Birthday.mp3
+├── LICENSE
+├── README.md
+├── Roboter_Tonsprache_Tabelle.pdf
+├── Servotest.py
+├── grok_image_1773002297769.jpg
+├── kippschutz.py
+├── lauf.py
+├── robot_sprache.py
+├── run.mp3
+├── sats.txt
+├── scan.mp3
+├── server2.py
+├── ultraschall_messung.py
+└── woerter.txt
+
