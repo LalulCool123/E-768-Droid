@@ -1,55 +1,48 @@
-# Projekt E-768 – Autonomer Droide mit eigener KI & Verhaltenslogik
+# E‑768 Droid – Sprachgesteuerter KI‑Roboter für den Raspberry Pi
 
-> Experimentelles KI‑Projekt: Ein virtueller Droide mit eigener Entscheidungs‑, Lern‑ und Verhaltenslogik.
+> Offline-Spracherkennung, eigene Robotersprache, Sensorik und Bewegung in einem Projekt.  
+> Ziel: Ein Droide, der hört, denkt, spricht und sich autonom bewegt.
 
----
-
-## 🧾 Überblick
-
-Projekt **E-768** ist ein Simulations‑/Entwicklungsprojekt für einen **autonomen Droiden**, der:
-
-- eine **eigene KI‑Komponente** für Wahrnehmung und Entscheidung nutzt,
-- eine modulare **Verhaltenslogik** (State Machines / Behavior Trees / GOAP o. Ä.) besitzt,
-- auf **Ereignisse und Umgebung** reagiert (Sensorik‑Simulation),
-- sein Verhalten **schrittweise optimieren oder erlernen** kann.
-
-Ziel ist es, eine flexible Architektur zu schaffen, in der man:
-- neue **Sensoren**, **Aktionen** und **Verhaltensmuster** schnell ergänzen kann,
-- verschiedene **KI‑Strategien** (Regelbasis, RL, Planner, LLM‑Backend, …) ausprobieren kann.
+Repository: <https://github.com/LalulCool123/E-768-Droid>
 
 ---
 
-## 🏗 Projektstruktur
+## 1. Überblick
 
+E‑768‑Droid ist ein Experimentier‑Projekt für einen sprachgesteuerten Roboter auf Basis eines Raspberry Pi.
 
-```text
-E-768-Droid/
-├── E-Sieben_de_raspberry-pi_v3_0_0/
-│   └── E-7_Befehle/
-├── Sounds/
-├── __pycache__/
-├── model/
-│   └── vosk-model-small-de-0.15/
-├── rhino/
-│   └── binding/
-│       └── python/
-├── whisper-venv/
-│
-├── AAA_E-7_Micro.html
-├── Befehle.txt
-├── Birthday.mp3
-├── LICENSE
-├── README.md
-├── Roboter_Tonsprache_Tabelle.pdf
-├── Servotest.py
-├── grok_image_1773002297769.jpg
-├── kippschutz.py
-├── lauf.py
-├── robot_sprache.py
-├── run.mp3
-├── sats.txt
-├── scan.mp3
-├── server2.py
-├── ultraschall_messung.py
-└── woerter.txt
+Der Droide kombiniert:
 
+- Offline-Spracherkennung (Vosk, optional Rhino/Whisper)
+- Eigene Robotersprache und Audio-Feedback (MP3-Sounds, Tonsprache)
+- Aktive Sensorik (Ultraschall, Kippschutz)
+- Bewegungssteuerung (Servos / Motorik)
+- Eine einfache, aber erweiterbare Logik für Verhalten und Reaktionen
+
+Das Projekt eignet sich als:
+
+- Einstieg in Sprachsteuerung auf dem Raspberry Pi
+- Grundlage für einen autonomen kleinen Roboter
+- Spielwiese für eigene Ideen, Erweiterungen und Experimente
+
+---
+
+## 2. TL;DR – Schnellstart (für Eilige)
+
+Auf dem Raspberry Pi:
+
+```bash
+git clone https://github.com/LalulCool123/E-768-Droid.git
+cd E-768-Droid
+
+python3 -m venv venv
+source venv/bin/activate
+
+# Abhängigkeiten installieren (wenn requirements.txt existiert)
+# pip install -r requirements.txt
+
+# Mindestens Vosk installieren, wenn noch nicht geschehen
+pip install vosk sounddevice
+
+# Beispiel: zentrale Logik starten (falls du server2.py dafür nutzt)
+python3 server2.py
