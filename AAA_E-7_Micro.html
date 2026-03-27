@@ -2,36 +2,392 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>Dauerhafte Sprachsteuerung mit Start-Button</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🤖 E-7-Droid Sprachsteuerung</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .robot-icon {
+      font-size: 60px;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    
+    h1 {
+      font-size: 32px;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    
+    .subtitle {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .status-bar {
+      background: #f0f0f0;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .status-item {
+      text-align: center;
+      flex: 1;
+    }
+    
+    .status-label {
+      font-size: 12px;
+      color: #999;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    
+    .status-value {
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ff4444;
+      margin-right: 5px;
+    }
+    
+    .status-indicator.online {
+      background: #44ff44;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .config-section {
+      margin-bottom: 25px;
+    }
+    
+    .config-label {
+      font-size: 12px;
+      color: #999;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    
+    .config-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Courier New', monospace;
+      transition: border-color 0.3s;
+    }
+    
+    .config-input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    .buttons-section {
+      margin-bottom: 25px;
+    }
+    
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    
+    button {
+      padding: 14px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      grid-column: 1 / -1;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+    
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+    
+    .btn-danger {
+      background: #ff6b6b;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #ff5252;
+    }
+    
+    .btn-success {
+      background: #51cf66;
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #37b24d;
+    }
+    
+    .output-section {
+      margin-bottom: 20px;
+    }
+    
+    .output-label {
+      font-size: 12px;
+      color: #999;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    
+    #output {
+      background: #f9f9f9;
+      border-left: 4px solid #667eea;
+      padding: 15px;
+      border-radius: 6px;
+      min-height: 50px;
+      font-size: 14px;
+      color: #333;
+      line-height: 1.5;
+    }
+    
+    #status {
+      background: #f0f7ff;
+      border-left: 4px solid #44aaff;
+      padding: 15px;
+      border-radius: 6px;
+      min-height: 50px;
+      font-size: 14px;
+      color: #0066cc;
+      line-height: 1.5;
+    }
+    
+    .animation {
+      animation: fadeIn 0.3s;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .mic-wave {
+      display: inline-block;
+      height: 20px;
+      margin: 0 3px;
+    }
+    
+    .mic-wave span {
+      display: inline-block;
+      width: 3px;
+      background: #667eea;
+      margin: 0 1px;
+      animation: wave 0.6s infinite;
+    }
+    
+    .mic-wave span:nth-child(2) { animation-delay: 0.1s; }
+    .mic-wave span:nth-child(3) { animation-delay: 0.2s; }
+    .mic-wave span:nth-child(4) { animation-delay: 0.3s; }
+    .mic-wave span:nth-child(5) { animation-delay: 0.4s; }
+    
+    @keyframes wave {
+      0%, 100% { height: 6px; }
+      50% { height: 18px; }
+    }
+    
+    .recording #startBtn {
+      background: #ff6b6b;
+    }
+    
+    @media (max-width: 600px) {
+      .container {
+        padding: 25px;
+      }
+      
+      h1 {
+        font-size: 24px;
+      }
+      
+      .button-group {
+        grid-template-columns: 1fr;
+      }
+      
+      .status-bar {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Sprachsteuerung</h1>
-
-  <label for="ip">Pi-IP-Adresse:</label>
-  <input type="text" id="ip" value="192.168.3.227" placeholder="z.B. 192.168.3.227" />
-  <button id="startBtn">Start Sprachsteuerung</button>
-
-  <p id="output"></p>
-  <p id="status"></p>
+  <div class="container">
+    <div class="header">
+      <div class="robot-icon">🤖</div>
+      <h1>E-7-Droid</h1>
+      <p class="subtitle">Sprachgesteuerter Roboter</p>
+    </div>
+    
+    <div class="status-bar">
+      <div class="status-item">
+        <div class="status-label">Status</div>
+        <div class="status-value">
+          <span class="status-indicator online"></span>
+          <span id="serverStatus">Online</span>
+        </div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Roboter</div>
+        <div class="status-value" id="robotState">Idle</div>
+      </div>
+    </div>
+    
+    <div class="config-section">
+      <label class="config-label">π Raspberry Pi IP-Adresse</label>
+      <input type="text" id="ip" class="config-input" value="192.168.3.227" placeholder="z.B. 192.168.3.227" />
+    </div>
+    
+    <div class="buttons-section">
+      <button id="startBtn" class="btn-primary">🎤 Sprachsteuerung Starten</button>
+      
+      <div class="button-group">
+        <button id="walkBtn" class="btn-success">🚶 Laufen</button>
+        <button id="idleBtn" class="btn-secondary">💤 Idle</button>
+      </div>
+      
+      <div class="button-group">
+        <button id="leftBtn" class="btn-secondary">⬅️ Links</button>
+        <button id="rightBtn" class="btn-secondary">➡️ Rechts</button>
+      </div>
+      
+      <div class="button-group">
+        <button id="turnBtn" class="btn-secondary">🔄 Drehen</button>
+        <button id="stopBtn" class="btn-danger">⏹️ Halt</button>
+      </div>
+    </div>
+    
+    <div class="output-section">
+      <div class="output-label">🎤 Erkannt</div>
+      <div id="output">Warte auf Eingabe...</div>
+    </div>
+    
+    <div class="output-section">
+      <div class="output-label">📊 Status</div>
+      <div id="status">🔄 Bereit zum Starten...</div>
+    </div>
+    
+    <div class="footer">
+      <p>E-7-Droid V2 | Spracherkennung in Deutsch</p>
+    </div>
+  </div>
 
   <script>
     const startBtn = document.getElementById('startBtn');
+    const walkBtn = document.getElementById('walkBtn');
+    const idleBtn = document.getElementById('idleBtn');
+    const leftBtn = document.getElementById('leftBtn');
+    const rightBtn = document.getElementById('rightBtn');
+    const turnBtn = document.getElementById('turnBtn');
+    const stopBtn = document.getElementById('stopBtn');
     const output = document.getElementById('output');
     const status = document.getElementById('status');
     const ipInput = document.getElementById('ip');
+    const robotState = document.getElementById('robotState');
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let isListening = false;
+
     if (!SpeechRecognition) {
-      status.textContent = "Spracherkennung wird von deinem Browser nicht unterstützt.";
+      status.textContent = "❌ Spracherkennung wird von deinem Browser nicht unterstützt.";
       startBtn.disabled = true;
     } else {
-      const recognition = new SpeechRecognition();
+      recognition = new SpeechRecognition();
       recognition.lang = 'de-DE';
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
       recognition.continuous = false;
 
       function startRecognition() {
+        isListening = true;
+        startBtn.classList.add('recording');
         status.textContent = "🎤 Höre zu...";
         recognition.start();
       }
@@ -40,21 +396,26 @@
         const speechResult = event.results[0][0].transcript.toLowerCase();
         output.textContent = `📝 Erkannt: ${speechResult}`;
 
-        if (speechResult.includes("e7") || speechResult.includes("sieben") || speechResult.includes("7")) {
+        if (speechResult.includes("e7") || speechResult.includes("sieben")) {
           status.textContent = "✅ Wakeword erkannt, sende Befehl...";
           sendCommand(speechResult);
         } else {
-          status.textContent = "Wakeword nicht erkannt, warte weiter...";
+          status.textContent = "⚠️ Wakeword nicht erkannt, höre weiter...";
+          setTimeout(startRecognition, 500);
         }
       };
 
       recognition.onerror = (event) => {
         status.textContent = '❌ Fehler: ' + event.error;
+        isListening = false;
+        startBtn.classList.remove('recording');
         setTimeout(startRecognition, 1000);
       };
 
       recognition.onend = () => {
-        setTimeout(startRecognition, 200);
+        if (isListening) {
+          setTimeout(startRecognition, 200);
+        }
       };
 
       function sendCommand(command) {
@@ -69,12 +430,15 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ intent: command })
         })
-        .then(response => response.text())
-        .then(text => {
-          status.textContent = "🔁 Antwort: " + text + " | Warte weiter auf Befehle...";
+        .then(response => response.json())
+        .then(data => {
+          if (data.response) {
+            status.textContent = "✅ Befehl ausgeführt! Warte weiter...";
+            output.textContent = data.response;
+          }
         })
         .catch(err => {
-          status.textContent = "❌ Fehler beim Senden: " + err + " | Warte weiter auf Befehle...";
+          status.textContent = "❌ Fehler beim Senden: " + err;
         });
       }
 
@@ -82,7 +446,31 @@
         startBtn.disabled = true;
         startRecognition();
       };
+
+      // Quick-Action Buttons
+      walkBtn.onclick = () => sendCommand("e7 lauf");
+      idleBtn.onclick = () => sendCommand("e7 idle");
+      stopBtn.onclick = () => sendCommand("e7 halt");
+      turnBtn.onclick = () => sendCommand("e7 dreh");
+      leftBtn.onclick = () => sendCommand("e7 links");
+      rightBtn.onclick = () => sendCommand("e7 rechts");
     }
+
+    // Periodisch Status abrufen
+    setInterval(() => {
+      const piIP = ipInput.value.trim();
+      if (!piIP) return;
+      
+      fetch(`http://${piIP}:7567/status`)
+        .then(r => r.json())
+        .then(data => {
+          robotState.textContent = (data.robot_state || "offline").toUpperCase();
+        })
+        .catch(() => {
+          robotState.textContent = "OFFLINE";
+        });
+    }, 2000);
   </script>
 </body>
 </html>
+

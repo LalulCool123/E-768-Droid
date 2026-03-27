@@ -8,11 +8,15 @@ import threading
 import pygame
 import time
 import random
+import signal
 
 app = Flask(__name__)
 CORS(app)
 
 running_scripts = {}
+robot_movement_process = None
+robot_state = "idle"  # idle, walking, stopped
+robot_pid = None
 
 # pygame einmal global initialisieren
 pygame.mixer.init()
@@ -138,8 +142,48 @@ def load_commands(filename="Befehle.txt"):
             commands[key.strip().lower()] = value.strip()
     return commands
 
+def start_robot_movement():
+    """Starte robot_movement.py im Hintergrund"""
+    global robot_movement_process, robot_pid
+    try:
+        print("🤖 Starte Robot Movement Script...")
+        movement_script = os.path.join(os.path.dirname(__file__), "robot_movement.py")
+        robot_movement_process = subprocess.Popen(
+            ["python3", movement_script],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        robot_pid = robot_movement_process.pid
+        print(f"✅ Robot Movement läuft (PID: {robot_pid})")
+    except Exception as e:
+        print(f"❌ Fehler beim Starten des Robot Movement: {e}")
+
+def stop_robot_movement():
+    """Stoppe robot_movement.py"""
+    global robot_movement_process, robot_pid
+    try:
+        if robot_movement_process:
+            robot_movement_process.terminate()
+            robot_movement_process.wait(timeout=5)
+            robot_pid = None
+            print("✅ Robot Movement gestoppt")
+    except Exception as e:
+        print(f"❌ Fehler beim Stoppen: {e}")
+
+@app.route('/status', methods=['GET'])
+def get_status():
+    """Gebe Roboter-Status zurück"""
+    return jsonify({
+        "robot_state": robot_state,
+        "movement_running": robot_pid is not None,
+        "status": "Online ✅"
+    })
+
 @app.route('/command', methods=['POST'])
 def handle_command():
+    global robot_movement_process, robot_state
+    
     data = request.get_json()
     if not data or 'intent' not in data:
         return jsonify({"error": "No intent provided"}), 400
@@ -156,6 +200,27 @@ def handle_command():
     except Exception as e:
         print(f"Fehler beim Schreiben in woerter.txt: {e}")
 
+    # ===== Bewegungs-Befehle =====
+    if user_input in ["lauf", "laufen", "go", "los", "gehen", "los geht", "gehen los"]:
+        print("🚶 Starte Lauf-Modus...")
+        robot_state = "walking"
+        return jsonify({"response": "Ich laufe jetzt los!"})
+    
+    if user_input in ["halt", "stop", "stopp", "stoff", "shop", "aufhören", "stehen"]:
+        print("⏹️  Stoppe Roboter...")
+        robot_state = "stopped"
+        return jsonify({"response": "Ich bleibe stehen."})
+    
+    if user_input in ["idle", "ruh", "ruhe", "ich bin fertig", "pause"]:
+        print("💤 Wechsle zu Idle...")
+        robot_state = "idle"
+        return jsonify({"response": "Ich schaue mich um."})
+    
+    if user_input in ["dreh", "drehen", "umdrehen", "wende"]:
+        print("🔄 Drehe mich um...")
+        return jsonify({"response": "Ich drehe mich um."})
+    
+    # ===== Standard-Befehle =====
     commands = load_commands()
 
     if user_input in ["stop", "stoff", "shop", "stopp", "aufhören"]:
@@ -203,5 +268,21 @@ def handle_command():
     return jsonify({"response": generated_sentence})
 
 if __name__ == '__main__':
-    print("Starte Server auf Port 7567...")
-    app.run(host='0.0.0.0', port=7567)
+    print("=" * 60)
+    print("🤖 E-7-Droid Server startet...")
+    print("=" * 60)
+    
+    # Starte Robot Movement Script
+    start_robot_movement()
+    
+    try:
+        print("Starte Flask Server auf Port 7567...")
+        print("http://0.0.0.0:7567")
+        app.run(host='0.0.0.0', port=7567, debug=False)
+    except KeyboardInterrupt:
+        print("\n⏹️  Server wird beendet...")
+        stop_robot_movement()
+    except Exception as e:
+        print(f"❌ Fehler: {e}")
+        stop_robot_movement()
+
