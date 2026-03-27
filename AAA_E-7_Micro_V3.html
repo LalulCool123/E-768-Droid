@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚡ E-7-Droid V3 | Neural Interface</title>
+  <style>
+    :root {
+      --primary-red: #FF1744;
+      --accent-purple: #7C3AED;
+      --dark-bg: #0a0a0f;
+      --darker-bg: #050508;
+      --cyber-text: #00FF99;
+      --danger-red: #FF0000;
+      --warning-orange: #FF6B35;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 50%, #1a0a2e 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      color: #fff;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(0deg, transparent 24%, rgba(255, 23, 68, 0.05) 25%, rgba(255, 23, 68, 0.05) 26%, transparent 27%, transparent 74%, rgba(255, 23, 68, 0.05) 75%, rgba(255, 23, 68, 0.05) 76%, transparent 77%, transparent),
+        linear-gradient(90deg, transparent 24%, rgba(255, 23, 68, 0.05) 25%, rgba(255, 23, 68, 0.05) 26%, transparent 27%, transparent 74%, rgba(255, 23, 68, 0.05) 75%, rgba(255, 23, 68, 0.05) 76%, transparent 77%, transparent);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      background: linear-gradient(135deg, rgba(10, 10, 15, 0.95) 0%, rgba(20, 10, 30, 0.95) 100%);
+      border: 3px solid var(--primary-red);
+      border-radius: 2px;
+      box-shadow: 
+        0 0 40px rgba(255, 23, 68, 0.4),
+        0 0 80px rgba(124, 58, 237, 0.2),
+        inset 0 0 60px rgba(255, 23, 68, 0.1);
+      padding: 35px;
+      max-width: 700px;
+      width: 100%;
+      position: relative;
+      animation: powerUp 0.8s ease-out;
+    }
+
+    @keyframes powerUp {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+        box-shadow: 0 0 20px rgba(255, 23, 68, 0.2);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 40px rgba(255, 23, 68, 0.4), 0 0 80px rgba(124, 58, 237, 0.2), inset 0 0 60px rgba(255, 23, 68, 0.1);
+      }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 35px;
+      border-bottom: 2px solid var(--primary-red);
+      padding-bottom: 20px;
+      position: relative;
+    }
+
+    .robot-icon {
+      font-size: 70px;
+      margin-bottom: 15px;
+      display: inline-block;
+      animation: float 3s ease-in-out infinite;
+      text-shadow: 0 0 20px rgba(255, 23, 68, 0.5);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    h1 {
+      font-size: 36px;
+      color: var(--cyber-text);
+      margin-bottom: 5px;
+      text-shadow: 0 0 10px rgba(0, 255, 153, 0.5);
+      letter-spacing: 2px;
+      font-weight: 900;
+    }
+
+    h1::before {
+      content: '▶ ';
+      color: var(--primary-red);
+    }
+
+    h1::after {
+      content: ' ◀';
+      color: var(--primary-red);
+    }
+
+    .subtitle {
+      color: var(--accent-purple);
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .version-badge {
+      display: inline-block;
+      background: var(--primary-red);
+      color: black;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      margin-left: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      animation: pulse-red 2s infinite;
+    }
+
+    @keyframes pulse-red {
+      0%, 100% { box-shadow: 0 0 10px var(--primary-red); }
+      50% { box-shadow: 0 0 20px var(--primary-red); }
+    }
+
+    /* Status Bar - Sci-Fi Terminal Style */
+    .status-bar {
+      background: linear-gradient(90deg, rgba(255, 23, 68, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+      border-left: 4px solid var(--primary-red);
+      border-right: 4px solid var(--accent-purple);
+      border-top: 2px solid var(--accent-purple);
+      border-bottom: 2px solid var(--primary-red);
+      border-radius: 2px;
+      padding: 20px;
+      margin-bottom: 25px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 15px;
+    }
+
+    .status-item {
+      text-align: center;
+      padding: 10px;
+      border-left: 2px solid var(--accent-purple);
+      background: rgba(0, 255, 153, 0.05);
+    }
+
+    .status-item:first-child {
+      border-left: none;
+    }
+
+    .status-label {
+      font-size: 11px;
+      color: var(--cyber-text);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .status-value {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--primary-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--danger-red);
+      box-shadow: 0 0 10px var(--danger-red);
+      border: 2px solid var(--primary-red);
+    }
+
+    .status-indicator.online {
+      background: var(--cyber-text);
+      box-shadow: 0 0 20px var(--cyber-text);
+      animation: pulse-green 1.2s infinite;
+    }
+
+    @keyframes pulse-green {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Config Section */
+    .config-section {
+      margin-bottom: 25px;
+    }
+
+    .config-label {
+      font-size: 11px;
+      color: var(--cyber-text);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .config-label::before {
+      content: '⚙️';
+    }
+
+    .config-input {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid var(--primary-red);
+      border-radius: 2px;
+      font-size: 13px;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      color: var(--cyber-text);
+      transition: all 0.3s;
+      text-shadow: 0 0 5px rgba(0, 255, 153, 0.3);
+    }
+
+    .config-input::placeholder {
+      color: rgba(0, 255, 153, 0.4);
+    }
+
+    .config-input:focus {
+      outline: none;
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+    }
+
+    /* Buttons Section */
+    .buttons-section {
+      margin-bottom: 25px;
+    }
+
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      padding: 14px 20px;
+      border: 2px solid var(--primary-red);
+      border-radius: 2px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 23, 68, 0.2);
+      transition: left 0.3s;
+      z-index: -1;
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: var(--primary-red);
+      color: black;
+      grid-column: 1 / -1;
+      box-shadow: 0 0 20px rgba(255, 23, 68, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 40px rgba(255, 23, 68, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.2);
+      border-color: var(--cyber-text);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 0 20px rgba(255, 23, 68, 0.4), inset 0 0 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent-purple);
+      border-color: var(--accent-purple);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(124, 58, 237, 0.2);
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+      transform: translateY(-2px);
+      border-color: var(--cyber-text);
+      color: var(--cyber-text);
+    }
+
+    .btn-danger {
+      background: var(--danger-red);
+      color: black;
+      border-color: var(--danger-red);
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    }
+
+    .btn-danger:hover {
+      background: var(--primary-red);
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+      transform: translateY(-2px);
+    }
+
+    .btn-success {
+      background: transparent;
+      color: var(--cyber-text);
+      border-color: var(--cyber-text);
+    }
+
+    .btn-success:hover {
+      background: rgba(0, 255, 153, 0.2);
+      box-shadow: 0 0 20px rgba(0, 255, 153, 0.4);
+      transform: translateY(-2px);
+    }
+
+    /* Output Sections */
+    .output-section {
+      margin-bottom: 20px;
+    }
+
+    .output-label {
+      font-size: 11px;
+      color: var(--cyber-text);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #output, #status {
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid var(--primary-red);
+      border-radius: 2px;
+      padding: 15px;
+      min-height: 60px;
+      font-size: 13px;
+      color: var(--cyber-text);
+      line-height: 1.6;
+      font-family: 'JetBrains Mono', monospace;
+      text-shadow: 0 0 5px rgba(0, 255, 153, 0.3);
+      word-break: break-word;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    #output {
+      border-left-color: var(--primary-red);
+      border-right-color: var(--accent-purple);
+    }
+
+    #status {
+      border-left-color: var(--accent-purple);
+      border-right-color: var(--primary-red);
+      color: var(--warning-orange);
+    }
+
+    #status.error {
+      color: var(--danger-red);
+    }
+
+    #status.success {
+      color: var(--cyber-text);
+    }
+
+    /* Animations */
+    .animation {
+      animation: scanlines 0.3s;
+    }
+
+    @keyframes scanlines {
+      from { 
+        opacity: 0;
+        transform: scaleY(0.8);
+      }
+      to { 
+        opacity: 1;
+        transform: scaleY(1);
+      }
+    }
+
+    .recording .btn-primary {
+      animation: record-pulse 0.5s infinite;
+    }
+
+    @keyframes record-pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 23, 68, 0.4); }
+      50% { box-shadow: 0 0 40px rgba(255, 23, 68, 0.8); }
+    }
+
+    .mic-wave {
+      display: inline-flex;
+      height: 20px;
+      gap: 3px;
+      align-items: flex-end;
+    }
+
+    .mic-wave span {
+      display: inline-block;
+      width: 4px;
+      background: var(--cyber-text);
+      margin: 0;
+      animation: wave-anim 0.6s infinite;
+      box-shadow: 0 0 8px rgba(0, 255, 153, 0.6);
+    }
+
+    .mic-wave span:nth-child(1) { animation-delay: 0.0s; height: 6px; }
+    .mic-wave span:nth-child(2) { animation-delay: 0.1s; height: 8px; }
+    .mic-wave span:nth-child(3) { animation-delay: 0.2s; height: 14px; }
+    .mic-wave span:nth-child(4) { animation-delay: 0.3s; height: 10px; }
+    .mic-wave span:nth-child(5) { animation-delay: 0.4s; height: 6px; }
+
+    @keyframes wave-anim {
+      0%, 100% { height: 6px; }
+      50% { height: 18px; }
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--accent-purple);
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 2px solid var(--primary-red);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .footer a {
+      color: var(--cyber-text);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .footer a:hover {
+      text-shadow: 0 0 10px rgba(0, 255, 153, 0.8);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 700px) {
+      .container {
+        padding: 20px;
+        border-width: 2px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .robot-icon {
+        font-size: 50px;
+      }
+
+      .button-group {
+        grid-template-columns: 1fr;
+      }
+
+      .status-bar {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      button {
+        font-size: 11px;
+        padding: 12px 15px;
+      }
+
+      #output, #status {
+        font-size: 12px;
+        padding: 12px;
+        min-height: 50px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        padding: 15px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .robot-icon {
+        font-size: 40px;
+      }
+    }
+
+    /* Performance optimizations */
+    button:active {
+      background-image: none;
+    }
+
+    .status-bar, #output, #status {
+      backface-visibility: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="robot-icon">⚡</div>
+      <h1>E-7-Droid <span class="version-badge">V3</span></h1>
+      <p class="subtitle">Neural Command Interface | AI-Enhanced</p>
+    </div>
+
+    <!-- Sci-Fi Status Terminal -->
+    <div class="status-bar">
+      <div class="status-item">
+        <div class="status-label">System Status</div>
+        <div class="status-value">
+          <span class="status-indicator online"></span>
+          <span id="serverStatus">ONLINE</span>
+        </div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">Robot State</div>
+        <div class="status-value" id="robotState">IDLE</div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">AI Engine</div>
+        <div class="status-value" id="aiStatus">READY</div>
+      </div>
+    </div>
+
+    <!-- Network Configuration -->
+    <div class="config-section">
+      <label class="config-label">π Raspberry Pi Address</label>
+      <input type="text" id="ip" class="config-input" value="192.168.3.227" placeholder="IP-Adresse eingeben..." />
+    </div>
+
+    <!-- Control Buttons -->
+    <div class="buttons-section">
+      <button id="startBtn" class="btn-primary">🎤 SPRACHSTEUERUNG AKTIVIEREN</button>
+
+      <div class="button-group">
+        <button id="walkBtn" class="btn-success">🚶 Laufen</button>
+        <button id="idleBtn" class="btn-secondary">💤 Idle</button>
+      </div>
+
+      <div class="button-group">
+        <button id="leftBtn" class="btn-secondary">⬅️ Links</button>
+        <button id="rightBtn" class="btn-secondary">➡️ Rechts</button>
+      </div>
+
+      <div class="button-group">
+        <button id="turnBtn" class="btn-secondary">🔄 Drehen</button>
+        <button id="stopBtn" class="btn-danger">⏹️ STOPP</button>
+      </div>
+    </div>
+
+    <!-- Output Display -->
+    <div class="output-section">
+      <div class="output-label">🎤 Spracherkennung</div>
+      <div id="output">▶ Warte auf Eingabe...</div>
+    </div>
+
+    <div class="output-section">
+      <div class="output-label">📊 System Feedback</div>
+      <div id="status">▶ Initialisierung abgeschlossen...</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>E-7-Droid V3 | AI-ENHANCED NEURAL INTERFACE | © 2026</p>
+    </div>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const walkBtn = document.getElementById('walkBtn');
+    const idleBtn = document.getElementById('idleBtn');
+    const leftBtn = document.getElementById('leftBtn');
+    const rightBtn = document.getElementById('rightBtn');
+    const turnBtn = document.getElementById('turnBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const output = document.getElementById('output');
+    const status = document.getElementById('status');
+    const ipInput = document.getElementById('ip');
+    const robotState = document.getElementById('robotState');
+    const aiStatus = document.getElementById('aiStatus');
+    const serverStatus = document.getElementById('serverStatus');
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let isListening = false;
+
+    if (!SpeechRecognition) {
+      status.textContent = "❌ Spracherkennung wird nicht unterstützt.";
+      status.classList.add('error');
+      startBtn.disabled = true;
+    } else {
+      recognition = new SpeechRecognition();
+      recognition.lang = 'de-DE';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      recognition.continuous = false;
+
+      function startRecognition() {
+        isListening = true;
+        startBtn.classList.add('recording');
+        status.textContent = "▶ 🎤 Höre zu...";
+        status.classList.remove('error');
+        recognition.start();
+      }
+
+      recognition.onresult = (event) => {
+        const speechResult = event.results[0][0].transcript.toLowerCase();
+        output.classList.add('animation');
+        output.textContent = `▶ Erkannt: "${speechResult}"`;
+
+        if (speechResult.includes("e7") || speechResult.includes("sieben")) {
+          status.textContent = "▶ ✅ Wakeword erkannt, verarbeite Befehl...";
+          status.classList.add('success');
+          sendCommand(speechResult);
+        } else {
+          status.textContent = "▶ ⚠️  Kein Wakeword erkannt, höre weiter...";
+          setTimeout(startRecognition, 500);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        status.textContent = `▶ ❌ Fehler: ${event.error}`;
+        status.classList.add('error');
+        isListening = false;
+        startBtn.classList.remove('recording');
+        setTimeout(startRecognition, 1000);
+      };
+
+      recognition.onend = () => {
+        if (isListening) {
+          setTimeout(startRecognition, 200);
+        } else {
+          startBtn.classList.remove('recording');
+          startBtn.disabled = false;
+        }
+      };
+
+      function sendCommand(command) {
+        const piIP = ipInput.value.trim();
+        if (!piIP) {
+          status.textContent = "▶ ❌ Gültige IP-Adresse erforderlich.";
+          status.classList.add('error');
+          return;
+        }
+
+        status.textContent = "▶ 🔄 Sende Befehl...";
+        
+        fetch(`http://${piIP}:7567/command`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ intent: command }),
+          timeout: 5000
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.response) {
+            status.textContent = `▶ ✅ Ausgeführt: ${data.response}`;
+            status.classList.remove('error');
+            status.classList.add('success');
+            output.textContent = `▶ Response: "${data.response}"`;
+          }
+        })
+        .catch(err => {
+          status.textContent = `▶ ❌ Fehler: ${err.message}`;
+          status.classList.add('error');
+        });
+      }
+
+      startBtn.onclick = () => {
+        startBtn.disabled = true;
+        startRecognition();
+      };
+
+      // Quick Action Buttons
+      walkBtn.onclick = () => sendCommand("e7 lauf");
+      idleBtn.onclick = () => sendCommand("e7 idle");
+      stopBtn.onclick = () => sendCommand("e7 halt");
+      turnBtn.onclick = () => sendCommand("e7 dreh");
+      leftBtn.onclick = () => sendCommand("e7 links");
+      rightBtn.onclick = () => sendCommand("e7 rechts");
+    }
+
+    // Periodical Status Updates
+    setInterval(() => {
+      const piIP = ipInput.value.trim();
+      if (!piIP) return;
+      
+      fetch(`http://${piIP}:7567/status`)
+        .then(r => r.json())
+        .then(data => {
+          robotState.textContent = (data.robot_state || "OFFLINE").toUpperCase();
+          aiStatus.textContent = data.status ? "READY" : "OFFLINE";
+          serverStatus.textContent = data.status ? "ONLINE" : "OFFLINE";
+        })
+        .catch(() => {
+          robotState.textContent = "OFFLINE";
+          aiStatus.textContent = "ERROR";
+          serverStatus.textContent = "OFFLINE";
+        });
+    }, 2000);
+  </script>
+</body>
+</html>
