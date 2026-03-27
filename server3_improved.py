@@ -45,9 +45,14 @@ robot_state = "idle"
 robot_pid = None
 command_history = deque(maxlen=50)  # Track last 50 commands for context
 
-# pygame mixer setup
-pygame.mixer.init(channels=2)  # 2 channels for concurrent playback
+# pygame mixer setup (graceful fallback for headless environments)
 mixer_lock = threading.Lock()
+AUDIO_AVAILABLE = False
+try:
+    pygame.mixer.init(channels=2)  # 2 channels for concurrent playback
+    AUDIO_AVAILABLE = True
+except Exception as e:
+    print(f"⚠️  Audio device not available: {e} (running in headless mode)")
 
 # ============= IMPROVED VOCABULARY & COMMAND CONTEXT =============
 class VocabularyManager:
@@ -179,6 +184,9 @@ def speak_with_robot_voice(text, use_cache=True):
 
 def play_audio(file_path):
     """Play audio file with thread-safe mixer access"""
+    if not AUDIO_AVAILABLE:
+        print(f"⚠️  Audio playback disabled (no audio device)")
+        return
     try:
         with mixer_lock:
             pygame.mixer.music.load(file_path)
@@ -190,6 +198,9 @@ def play_audio(file_path):
 
 def play_mp3(file_path):
     """Play MP3 file"""
+    if not AUDIO_AVAILABLE:
+        print(f"⚠️  Audio playback disabled (no audio device)")
+        return
     try:
         with mixer_lock:
             pygame.mixer.music.load(file_path)

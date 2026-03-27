@@ -172,20 +172,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-        winkel_x = math.degrees(math.atan2(acc_y, acc_z))
-        winkel_y = math.degrees(math.atan2(acc_x, acc_z))
-
-        print(f"Neigung X: {winkel_x:.1f}°, Y: {winkel_y:.1f}°")
-
-        if abs(winkel_x) > 45 or abs(winkel_y) > 45:
-            print("WARNUNG: Kippwinkel überschritten!")
-            reset_servos()
-            say_warning()
-            break
-
-        time.sleep(0.5)
-
-if __name__ == "__main__":
-    check_tilt()
